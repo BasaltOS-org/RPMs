@@ -302,7 +302,6 @@ install -p -m 0644 %{SOURCE700}  %{buildroot}%{_sysconfdir}/rpm/
 %config(noreplace) %{_sysconfdir}/issue
 %config(noreplace) %{_sysconfdir}/issue.net
 %dir %{_sysconfdir}/issue.d
-%{_sysconfdir}/dnf/protected.d/basalt-release.conf
 %dir %{_sysconfdir}/yum.repos.d
 %ghost %{_sysconfdir}/yum.repos.d/redhat.repo
 %{_rpmmacrodir}/macros.dist
