@@ -275,14 +275,7 @@ install -p -m 0644 %{SOURCE500} %{buildroot}%{_sysconfdir}/yum.repos.d/
 install -p -m 0644 %{SOURCE501} %{buildroot}%{_sysconfdir}/yum.repos.d/
 install -p -m 0644 %{SOURCE502} %{buildroot}%{_sysconfdir}/yum.repos.d/
 install -p -m 0644 %{SOURCE503} %{buildroot}%{_sysconfdir}/yum.repos.d/
-install -p -m 0644 %{SOURCE504} %{buildroot}%{_sysconfdir}/yum.repos.d/
-install -p -m 0644 %{SOURCE505} %{buildroot}%{_sysconfdir}/yum.repos.d/
-install -p -m 0644 %{SOURCE506} %{buildroot}%{_sysconfdir}/yum.repos.d/
-# RT and NFV are only for x86_64
-%ifarch x86_64
-install -p -m 0644 %{SOURCE510} %{buildroot}%{_sysconfdir}/yum.repos.d/
-install -p -m 0644 %{SOURCE511} %{buildroot}%{_sysconfdir}/yum.repos.d/
-%endif
+
 
 # dnf variables
 install -d -m 0755 %{buildroot}%{_sysconfdir}/dnf/vars
