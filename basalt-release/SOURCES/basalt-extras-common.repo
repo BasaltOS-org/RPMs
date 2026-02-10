@@ -1,0 +1,68 @@
+[extras]
+name=BasaltOS $releasever - Extras packages
+mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/extras
+# baseurl=https://kitten.repo.almalinux.org/$releasever-kitten/extras/$basearch/os/
+enabled=1
+gpgcheck=1
+countme=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Basalt-10
+metadata_expire=86400
+enabled_metadata=1
+
+[extras-debuginfo]
+name=BasaltOS $releasever - Extras packages - Debug
+mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/extras-debug
+# baseurl=https://kitten.vault.almalinux.org/$releasever-kitten/extras/debug/$basearch/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Basalt-10
+metadata_expire=86400
+enabled_metadata=0
+
+[extras-source]
+name=BasaltOS $releasever - Extras packages - Source
+mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/extras-source
+# baseurl=https://kitten.vault.almalinux.org/$releasever-kitten/extras/Source/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Basalt-10
+metadata_expire=86400
+enabled_metadata=0
+
+[epel-multimedia]
+name=negativo17 - Multimedia
+baseurl=https://negativo17.org/repos/multimedia/epel-$releasever/$basearch/
+enabled=1
+skip_if_unavailable=0
+exclude=nvidia* akmod-nvidia* dkms-nvidia* kmod-nvidia* cuda* libnvidia* xorg-x11-nvidia* libva-vdpau-driver* libvdpau-nvidia*
+gpgkey=https://negativo17.org/repos/RPM-GPG-KEY-slaanesh
+gpgcheck=1
+enabled_metadata=1
+metadata_expire=6h
+type=rpm-md
+repo_gpgcheck=0
+
+[epel-multimedia-source]
+name=negativo17 - Multimedia - Source
+baseurl=https://negativo17.org/repos/multimedia/epel-$releasever/SRPMS
+enabled=0
+skip_if_unavailable=0
+gpgkey=https://negativo17.org/repos/RPM-GPG-KEY-slaanesh
+gpgcheck=1
+enabled_metadata=1
+metadata_expire=6h
+type=rpm-md
+repo_gpgcheck=0
+
+[epel-multimedia-debug]
+name=negativo17 - Multimedia - Debug
+baseurl=https://negativo17.org/repos/multimedia/epel-$releasever/$basearch.debug/
+enabled=0
+skip_if_unavailable=0
+exclude=nvidia* akmod-nvidia* dkms-nvidia* kmod-nvidia* cuda* libnvidia* xorg-x11-nvidia* libva-vdpau-driver* libvdpau-nvidia*
+gpgkey=https://negativo17.org/repos/RPM-GPG-KEY-slaanesh
+gpgcheck=1
+enabled_metadata=1
+metadata_expire=6h
+type=rpm-md
+repo_gpgcheck=0

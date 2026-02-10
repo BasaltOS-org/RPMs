@@ -1,0 +1,12 @@
+# This repository is for NVIDIA user space and CUDA components which cannot be redistributed due to licensing restrictions.
+# This content is served directly by NVIDIA.
+
+# Do not modify this file, it will be overwritten/replaced on updates.
+
+[cuda-rhel$releasever-$basearch]
+name=cuda-rhel$releasever-$basearch
+baseurl=https://developer.download.nvidia.com/compute/cuda/repos/rhel$releasever/$basearch
+enabled=1
+gpgcheck=1
+countme=1
+gpgkey=https://developer.download.nvidia.com/compute/cuda/repos/rhel$releasever/$basearch/CDF6BA43.pub

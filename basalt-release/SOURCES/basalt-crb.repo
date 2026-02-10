@@ -1,0 +1,30 @@
+[crb]
+name=BasaltOS $releasever - CRB
+mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/crb
+# baseurl=https://kitten.repo.almalinux.org/$releasever-kitten/CRB/$basearch/os/
+enabled=1
+gpgcheck=1
+countme=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Basalt-10
+metadata_expire=86400
+enabled_metadata=1
+
+[crb-debuginfo]
+name=BasaltOS $releasever - CRB - Debug
+mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/crb-debug
+# baseurl=https://kitten.vault.almalinux.org/$releasever-kitten/CRB/debug/$basearch/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Basalt-10
+metadata_expire=86400
+enabled_metadata=0
+
+[crb-source]
+name=BasaltOS $releasever - CRB - Source
+mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/crb-source
+# baseurl=https://kitten.vault.almalinux.org/$releasever-kitten/CRB/Source/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Basalt-10
+metadata_expire=86400
+enabled_metadata=0

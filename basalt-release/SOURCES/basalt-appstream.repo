@@ -1,0 +1,43 @@
+[appstream]
+name=BasaltOS $releasever - AppStream
+mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/appstream
+# baseurl=https://kitten.repo.almalinux.org/$releasever-kitten/AppStream/$basearch/os/
+enabled=1
+gpgcheck=1
+countme=1
+exclude=firefox*
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Basalt-10
+metadata_expire=86400
+enabled_metadata=1
+
+[devel]
+name=BasaltOS $releasever - Developer Tools
+mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/devel
+# baseurl=https://kitten.repo.almalinux.org/$releasever-kitten/devel/$basearch/os/
+enabled=1
+gpgcheck=1
+countme=1
+exclude=firefox*
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Basalt-10
+metadata_expire=86400
+enabled_metadata=1
+
+[appstream-debuginfo]
+name=BasaltOS $releasever - AppStream - Debug
+mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/appstream-debug
+# baseurl=https://kitten.vault.almalinux.org/$releasever-kitten/AppStream/debug/$basearch/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Basalt-10
+metadata_expire=86400
+enabled_metadata=0
+
+[appstream-source]
+name=BasaltOS $releasever - AppStream - Source
+mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/appstream-source
+# baseurl=https://kitten.vault.almalinux.org/$releasever-kitten/AppStream/Source/
+enabled=0
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Basalt-10
+metadata_expire=86400
+enabled_metadata=0
