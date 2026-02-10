@@ -5,7 +5,8 @@ mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/extras
 enabled=1
 gpgcheck=1
 countme=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Basalt-10
+exclude=almalinux* kernel*
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux-10
 metadata_expire=86400
 enabled_metadata=1
 
@@ -15,7 +16,7 @@ mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/extras-debug
 # baseurl=https://kitten.vault.almalinux.org/$releasever-kitten/extras/debug/$basearch/
 enabled=0
 gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Basalt-10
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux-10
 metadata_expire=86400
 enabled_metadata=0
 
@@ -25,7 +26,7 @@ mirrorlist=https://mirrors.almalinux.org/mirrorlist/$releasever/extras-source
 # baseurl=https://kitten.vault.almalinux.org/$releasever-kitten/extras/Source/
 enabled=0
 gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-Basalt-10
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-AlmaLinux-10
 metadata_expire=86400
 enabled_metadata=0
 

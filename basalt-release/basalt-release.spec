@@ -1,19 +1,17 @@
 %global distro  BasaltOS
-%define release_name    10
+%define release_name    Version 10.1
 %global major   10
 %global minor   1
-%global dist .el10
 
 Name:           basalt-release
 Version:        %{major}.%{minor}
-Release:        1%{?dist}
+Release:        16%{?dist}
 Summary:        %{distro} release files
+Group:          System Environment/Base
 License:        GPL-2.0-or-later
 URL:            https://basaltdev.tech
 
 Provides:       centos-release = %{version}-%{release}
-Provides:       centos-stream-release = %{version}-%{release}
-Provides:       basalt-release = %{version}-%{release}
 
 # Required for a lorax run (to generate install media)
 Requires:       basalt-repos = %{version}-%{release}
@@ -27,8 +25,8 @@ Provides:       redhat-release = %{version}-%{release}
 # https://github.com/rpm-software-management/dnf/blob/4.2.23/dnf/const.py.in#L26
 Provides:       system-release = %{version}-%{release}
 Provides:       system-release(releasever) = %{major}
-Conflicts:      system-release
-Conflicts:      almalinux-release
+Provides:       system-release(releasever_major) = %{major}
+Provides:       system-release(releasever_minor) = %{minor}
 
 # required by libdnf
 # https://github.com/rpm-software-management/libdnf/blob/0.48.0/libdnf/module/ModulePackage.cpp#L472
@@ -43,15 +41,23 @@ Source302:      90-default-user.preset
 Source303:      99-default-disable.preset
 Source304:      50-redhat.conf
 
-Source400:      alsecureboot001.cer
+Source400:      alsecurebootca1.cer
+# kernel signing certificate
+Source401:      alsecureboot1.cer
+# grub2 signing certificate
+Source402:      alsecureboot1.cer
+# Fwupd signing certificate
+Source403:      alsecureboot1.cer
+# UKI signing certificate
+Source404:      alsecureboot1.cer
 
 Source500:      basalt-appstream.repo
 Source501:      basalt-baseos.repo
 Source502:      basalt-crb.repo
 Source503:      basalt-extras-common.repo
+Source600:      RPM-GPG-KEY-AlmaLinux-10
 
-Source600:      RPM-GPG-KEY-Basalt-10
-
+Source700:      macros.x86_64_v2
 
 %package -n basalt-sb-certs
 Summary: %{distro} public secureboot certificates
@@ -92,7 +98,7 @@ cp %{SOURCE201} ./docs
 
 # create /etc/system-release and /etc/redhat-release
 install -d -m 0755 %{buildroot}%{_sysconfdir}
-echo "%{distro} release %{major} (%{release_name})" > %{buildroot}%{_sysconfdir}/basalt-release
+echo "%{distro} release %{major}.%{minor}%{?beta: %{beta}} (%{release_name})" > %{buildroot}%{_sysconfdir}/basalt-release
 ln -s basalt-release %{buildroot}%{_sysconfdir}/system-release
 ln -s basalt-release %{buildroot}%{_sysconfdir}/redhat-release
 
@@ -104,16 +110,21 @@ ln -s basalt-release %{buildroot}%{_sysconfdir}/redhat-release
 # Name of vendor / name of distribution. Typically used to identify where
 # the binary comes from in --help or --version messages of programs.
 # Examples: gdb.spec, clang.spec
-%global dist_vendor BasaltOS made by the Community!
+%global dist_vendor BasaltOS Community
 %global dist_name   %{distro}
+
+# The namespace for purl
+# https://github.com/package-url/purl-spec
+# for example as in: pkg:rpm/almalinux/python-setuptools@69.2.0-10.el10?arch=src"
+%global dist_purl_namespace basaltos
 
 # URL of the homepage of the distribution
 # Example: gstreamer1-plugins-base.spec
-%global dist_home_url https://basaltdev.tech/
+%global dist_home_url https://basaltdev.tech
 
 # Bugzilla / bug reporting URLs shown to users.
 # Examples: gcc.spec
-%global dist_bug_report_url https://forums.https://basaltdev.tech/
+%global dist_bug_report_url https://basaltdev.tech
 
 # debuginfod server, as used in elfutils.spec.
 # %global dist_debuginfod_url https://debuginfod.centos.org/
@@ -123,36 +134,33 @@ ln -s basalt-release %{buildroot}%{_sysconfdir}/redhat-release
 # Create the os-release file
 install -d -m 0755 %{buildroot}%{_prefix}/lib
 cat > %{buildroot}%{_prefix}/lib/os-release << EOF
-NAME="BasaltOS"
-VERSION="10"
+NAME="%{dist_name}"
+VERSION="%{major}.%{minor} (%{release_name})"
 ID="basalt"
-ID_LIKE="rhel centos fedora"
-VERSION_ID="10"
-PLATFORM_ID="platform:el10"
-PRETTY_NAME="BasaltOS 10"
+ID_LIKE="almalinux rhel centos fedora"
+VERSION_ID="%{major}.%{minor}"
+PLATFORM_ID="platform:el%{major}"
+PRETTY_NAME="%{distro} %{major}.%{minor}%{?beta: %{beta}} (%{release_name})"
 ANSI_COLOR="0;34"
 LOGO="fedora-logo-icon"
-CPE_NAME="cpe:/o:basalt:basalt:%{major}::baseos"
+CPE_NAME="cpe:/o:basalt:basalt:%{major}.%{minor}"
 HOME_URL="%{dist_home_url}"
-DOCUMENTATION_URL="https://https://basaltdev.tech/help"
+DOCUMENTATION_URL="https://basaltdev.tech"
 VENDOR_NAME="Basalt"
-VENDOR_URL="https://https://basaltdev.tech/"
+VENDOR_URL="%{dist_home_url}"
 BUG_REPORT_URL="%{dist_bug_report_url}"
 
-BASALT_MANTISBT_PROJECT="BasaltOS-%{major}"
-BASALT_MANTISBT_PROJECT_VERSION="%{major}"
-REDHAT_SUPPORT_PRODUCT="BasaltOS"
-REDHAT_SUPPORT_PRODUCT_VERSION="%{major}"
+BASALT_MANTISBT_PROJECT="Basalt-%{major}"
+BASALT_MANTISBT_PROJECT_VERSION="%{major}.%{minor}"
+REDHAT_SUPPORT_PRODUCT="%{distro}"
+REDHAT_SUPPORT_PRODUCT_VERSION="%{major}.%{minor}%{?beta: %{beta}}"
 EOF
-
-# Should be added to os-release in the future
-# SUPPORT_END=%{eol_date}
 
 # Create the symlink for /etc/os-release
 ln -s ../usr/lib/os-release %{buildroot}%{_sysconfdir}/os-release
 
 # write cpe to /etc/system/release-cpe
-echo "cpe:/o:basalt:basalt:%{major}::baseos" > %{buildroot}%{_sysconfdir}/system-release-cpe
+echo "cpe:/o:basalt:basalt:%{major}.%{minor}" > %{buildroot}%{_sysconfdir}/system-release-cpe
 
 # create /etc/issue, /etc/issue.net and /etc/issue.d
 echo '\S' > %{buildroot}%{_sysconfdir}/issue
@@ -177,6 +185,7 @@ cat > %{buildroot}%{_rpmmacrodir}/macros.dist << EOF
 %%dist %%{!?distprefix0:%%{?distprefix}}%%{expand:%%{lua:for i=0,9999 do print("%%{?distprefix" .. i .."}") end}}%%{distcore}%%{?distsuffix}%%{?with_bootstrap:%{__bootstrap}}
 %%dist_vendor         %{dist_vendor}
 %%dist_name           %{dist_name}
+%%dist_purl_namespace %{dist_purl_namespace}
 %%dist_home_url       %{dist_home_url}
 %%dist_bug_report_url %{dist_bug_report_url}
 EOF
@@ -211,18 +220,29 @@ install -d -m 0755 %{buildroot}%{_datadir}/pki/sb-certs/
 
 # Install aarch64 certs
 install -m 644 %{SOURCE400} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-ca-aarch64.cer
-install -m 644 %{SOURCE400} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-kernel-aarch64.cer
-install -m 644 %{SOURCE400} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-grub2-aarch64.cer
-install -m 644 %{SOURCE400} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-fwupd-aarch64.cer
-install -m 644 %{SOURCE400} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-uki-virt-aarch64.cer
+install -m 644 %{SOURCE401} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-kernel-aarch64.cer
+install -m 644 %{SOURCE402} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-grub2-aarch64.cer
+install -m 644 %{SOURCE403} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-fwupd-aarch64.cer
+install -m 644 %{SOURCE404} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-uki-virt-aarch64.cer
 
 
 # Install x86_64 certs
 install -m 644 %{SOURCE400} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-ca-x86_64.cer
-install -m 644 %{SOURCE400} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-kernel-x86_64.cer
-install -m 644 %{SOURCE400} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-grub2-x86_64.cer
-install -m 644 %{SOURCE400} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-fwupd-x86_64.cer
-install -m 644 %{SOURCE400} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-uki-virt-x86_64.cer
+install -m 644 %{SOURCE401} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-kernel-x86_64.cer
+install -m 644 %{SOURCE402} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-grub2-x86_64.cer
+install -m 644 %{SOURCE403} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-fwupd-x86_64.cer
+install -m 644 %{SOURCE404} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-uki-virt-x86_64.cer
+
+# Install ppc64le certs
+install -m 644 %{SOURCE400} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-ca-ppc64le.cer
+install -m 644 %{SOURCE401} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-kernel-ppc64le.cer
+install -m 644 %{SOURCE402} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-grub2-ppc64le.cer
+install -m 644 %{SOURCE404} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-uki-virt-ppc64le.cer
+
+# Install s390x certs
+install -m 644 %{SOURCE400} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-ca-s390x.cer
+install -m 644 %{SOURCE401} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-kernel-s390x.cer
+install -m 644 %{SOURCE404} %{buildroot}%{_datadir}/pki/sb-certs/secureboot-uki-virt-s390x.cer
 
 # Link x86_64 certs
 ln -sr %{buildroot}%{_datadir}/pki/sb-certs/secureboot-ca-x86_64.cer %{buildroot}%{_sysconfdir}/pki/sb-certs/secureboot-ca-x86_64.cer
@@ -237,21 +257,31 @@ ln -sr %{buildroot}%{_datadir}/pki/sb-certs/secureboot-kernel-aarch64.cer %{buil
 ln -sr %{buildroot}%{_datadir}/pki/sb-certs/secureboot-grub2-aarch64.cer %{buildroot}%{_sysconfdir}/pki/sb-certs/secureboot-grub2-aarch64.cer
 ln -sr %{buildroot}%{_datadir}/pki/sb-certs/secureboot-fwupd-aarch64.cer %{buildroot}%{_sysconfdir}/pki/sb-certs/secureboot-fwupd-aarch64.cer
 ln -sr %{buildroot}%{_datadir}/pki/sb-certs/secureboot-uki-virt-aarch64.cer %{buildroot}%{_sysconfdir}/pki/sb-certs/secureboot-uki-virt-aarch64.cer
+
+# Link ppc64le certs
+ln -sr %{buildroot}%{_datadir}/pki/sb-certs/secureboot-ca-ppc64le.cer %{buildroot}%{_sysconfdir}/pki/sb-certs/secureboot-ca-ppc64le.cer
+ln -sr %{buildroot}%{_datadir}/pki/sb-certs/secureboot-kernel-ppc64le.cer %{buildroot}%{_sysconfdir}/pki/sb-certs/secureboot-kernel-ppc64le.cer
+ln -sr %{buildroot}%{_datadir}/pki/sb-certs/secureboot-grub2-ppc64le.cer %{buildroot}%{_sysconfdir}/pki/sb-certs/secureboot-grub2-ppc64le.cer
+ln -sr %{buildroot}%{_datadir}/pki/sb-certs/secureboot-uki-virt-ppc64le.cer %{buildroot}%{_sysconfdir}/pki/sb-certs/secureboot-uki-virt-ppc64le.cer
+
+# Link s390x certs
+ln -sr %{buildroot}%{_datadir}/pki/sb-certs/secureboot-ca-s390x.cer %{buildroot}%{_sysconfdir}/pki/sb-certs/secureboot-ca-s390x.cer
+ln -sr %{buildroot}%{_datadir}/pki/sb-certs/secureboot-kernel-s390x.cer %{buildroot}%{_sysconfdir}/pki/sb-certs/secureboot-kernel-s390x.cer
+ln -sr %{buildroot}%{_datadir}/pki/sb-certs/secureboot-uki-virt-s390x.cer %{buildroot}%{_sysconfdir}/pki/sb-certs/secureboot-uki-virt-s390x.cer
+
 # copy yum repos
 install -d -m 0755 %{buildroot}%{_sysconfdir}/yum.repos.d
 install -p -m 0644 %{SOURCE500} %{buildroot}%{_sysconfdir}/yum.repos.d/
 install -p -m 0644 %{SOURCE501} %{buildroot}%{_sysconfdir}/yum.repos.d/
 install -p -m 0644 %{SOURCE502} %{buildroot}%{_sysconfdir}/yum.repos.d/
 install -p -m 0644 %{SOURCE503} %{buildroot}%{_sysconfdir}/yum.repos.d/
-
-%if %{with beta}
-install -p -m 0644 %{SOURCE512} %{buildroot}%{_sysconfdir}/yum.repos.d/
-%endif
-
-# Replace basearch to x86_64_v2
-%ifarch x86_64_v2
-sed -i "s/\$basearch/x86_64_v2/g" %{buildroot}%{_sysconfdir}/yum.repos.d/*.repo
-sed -i '/^mirrorlist=/ s|$|?arch=x86_64_v2|g' %{buildroot}%{_sysconfdir}/yum.repos.d/*.repo
+install -p -m 0644 %{SOURCE504} %{buildroot}%{_sysconfdir}/yum.repos.d/
+install -p -m 0644 %{SOURCE505} %{buildroot}%{_sysconfdir}/yum.repos.d/
+install -p -m 0644 %{SOURCE506} %{buildroot}%{_sysconfdir}/yum.repos.d/
+# RT and NFV are only for x86_64
+%ifarch x86_64
+install -p -m 0644 %{SOURCE510} %{buildroot}%{_sysconfdir}/yum.repos.d/
+install -p -m 0644 %{SOURCE511} %{buildroot}%{_sysconfdir}/yum.repos.d/
 %endif
 
 # dnf variables
@@ -265,8 +295,7 @@ install -p -m 0644 %{SOURCE600} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/
 # These variables should be set in the build environment to change rpm names
 mkdir -p %{buildroot}%{_sysconfdir}/rpm
 %ifarch x86_64_v2
-echo '%%_target_platform x86_64-%%{_vendor}-%%{_target_os}%%{?_gnu}' >> %{buildroot}%{_sysconfdir}/rpm/macros.x86_64_v2
-echo '%%x86_64_v2 1' >> %{buildroot}%{_sysconfdir}/rpm/macros.x86_64_v2
+install -p -m 0644 %{SOURCE700}  %{buildroot}%{_sysconfdir}/rpm/
 %endif
 
 
@@ -280,6 +309,7 @@ echo '%%x86_64_v2 1' >> %{buildroot}%{_sysconfdir}/rpm/macros.x86_64_v2
 %config(noreplace) %{_sysconfdir}/issue
 %config(noreplace) %{_sysconfdir}/issue.net
 %dir %{_sysconfdir}/issue.d
+%{_sysconfdir}/dnf/protected.d/basalt-release.conf
 %dir %{_sysconfdir}/yum.repos.d
 %ghost %{_sysconfdir}/yum.repos.d/redhat.repo
 %{_rpmmacrodir}/macros.dist
@@ -289,9 +319,6 @@ echo '%%x86_64_v2 1' >> %{buildroot}%{_sysconfdir}/rpm/macros.x86_64_v2
 %{_prefix}/lib/systemd/system-preset/*
 %{_prefix}/lib/systemd/user-preset/*
 %{_prefix}/lib/sysctl.d/50-redhat.conf
-%ifarch x86_64_v2
-%config(noreplace) %{_sysconfdir}/rpm/macros.x86_64_v2
-%endif
 
 %files -n basalt-sb-certs
 # Note to future packagers:
@@ -306,16 +333,12 @@ echo '%%x86_64_v2 1' >> %{buildroot}%{_sysconfdir}/rpm/macros.x86_64_v2
 %config(noreplace) %{_sysconfdir}/yum.repos.d/basalt-baseos.repo
 %config(noreplace) %{_sysconfdir}/yum.repos.d/basalt-crb.repo
 %config(noreplace) %{_sysconfdir}/yum.repos.d/basalt-extras-common.repo
-%if %{with beta}
-%config(noreplace) %{_sysconfdir}/yum.repos.d/basalt-beta.repo
-%endif
 %config(noreplace) %{_sysconfdir}/dnf/vars/stream
-
 
 %files -n basalt-gpg-keys
 %{_sysconfdir}/pki/rpm-gpg
 
 %changelog
-* Sat Feb 7 2026 Sidney Birkhead <birkheadsidney261@protonmail.com> - 10.1-1
-    - Initial commit!
-
+* Tue Feb 10 2026 Sidney Birkhead <birkheadsidney261@protonmail.com> - 10.1-16
+- 10.1 stable
+- Initial BasaltOS release
